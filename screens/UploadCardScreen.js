@@ -50,6 +50,8 @@ const UploadCardScreen = () => {
     }
   };
 
+  
+
   const uploadImage = async () => {
     if (frontImage && backImage) {
       console.log('Uploading images:', frontImage, backImage);

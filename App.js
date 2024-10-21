@@ -52,8 +52,11 @@ import AccountDetailsScreen from './screens/AccountCheckScreen';
 import TransactionHistoryScreen from './screens/TransactionHistoryScreen';
 import SecurityScreen from './screens/SecurityScreen';
 import NotificationScreen from './screens/NotificationScreen';
-
-
+import PhoneNumberScreen from './screens/PhoneNumberScreen';
+import CodeVerificationScreen from './screens/CodeVerificationScreen';
+import AccountCreatedScreen from './screens/AccountCreatedScreen';
+import SetPinScreen from './screens/SetPinScreen';
+import ConfirmPinScreen from './screens/ConfirmPinScreen';
 
 const theme = {
     ...DefaultTheme,
@@ -131,6 +134,12 @@ const App = () => {
                 <Stack.Screen name="history" component={TransactionHistoryScreen} />
                 <Stack.Screen name="Security" component={SecurityScreen} />
                 <Stack.Screen name="Notification" component={NotificationScreen} />
+                <Stack.Screen name="PhoneNumber" component={PhoneNumberScreen} />
+                <Stack.Screen name="CodeVerification" component={CodeVerificationScreen} />
+
+                <Stack.Screen name="AccountCreated" component={AccountCreatedScreen} />
+                <Stack.Screen name="SetPin" component={SetPinScreen} />
+                <Stack.Screen name="ConfirmPin" component={ConfirmPinScreen} />
 
 
                 {/* <Stack.Screen name="Scan" component={Scan} /> */}

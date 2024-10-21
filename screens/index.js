@@ -42,9 +42,11 @@ import TransactionHistoryScreen from "./TransactionHistoryScreen";
 import SecurityScreen from "./SecurityScreen";
 import NotificationScreen from "./NotificationScreen";
 
-
-
-
+import PhoneNumberScreen from "./PhoneNumberScreen";
+import CodeVerificationScreen from "./CodeVerificationScreen";
+import AccountCreatedScreen from "./AccountCreatedScreen";
+import SetPinScreen from "./SetPinScreen";
+import ConfirmPinScreen from "./ConfirmPinScreen";
 
 
 
@@ -92,5 +94,10 @@ export {
     AccountDetailsScreen,
     TransactionHistoryScreen,
     SecurityScreen,
-    NotificationScreen
+    NotificationScreen,
+    PhoneNumberScreen,
+    CodeVerificationScreen,
+    AccountCreatedScreen,
+    SetPinScreen,
+    ConfirmPinScreen
 };

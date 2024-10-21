@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Card2Pay",
+    "name": "Card2Bill",
     "slug": "Card2Pay",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -31,9 +31,11 @@
       "permissions": [
         "CAMERA",
         "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
+        "WRITE_EXTERNAL_STORAGE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.card2pay.card2pay"
+      "package": "com.card2bill.card2bill"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -46,6 +48,12 @@
         }
       ],
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b88c53c6-1621-457e-953a-76188577b96a"
+      }
+    },
+    "owner": "hightowerkels"
   }
 }
