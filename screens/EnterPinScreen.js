@@ -16,73 +16,100 @@ import { COLORS, SIZES, FONTS } from "../constants";
 
 const EnterPinScreen = ({ navigation }) => {
     const [pin, setPin] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const handlePinChange = (value) => {
-        setPin(value);
+        // Only allow numeric input
+        if (/^\d{0,4}$/.test(value)) {
+            setPin(value);
+        }
     };
 
-    const handlePinSubmit = () => {
-        // Implement your logic to verify the PIN
-        console.log('Entered PIN:', pin);
+    const handlePinSubmit = async () => {
+        try {
+            setIsLoading(true);
+            // Show the modal
+            setIsModalVisible(true);
 
-        // Show the modal
-        setIsModalVisible(true);
+            // Simulate API call or verification process
+            await new Promise(resolve => setTimeout(resolve, 3000));
 
-        // After a delay, navigate to the Await Verification screen
-        setTimeout(() => {
-            setIsModalVisible(false);
+            // Navigate to next screen
             navigation.navigate("AccountCheck");
-        }, 3000); // 3-second delay
+        } catch (error) {
+            console.error('Error submitting PIN:', error);
+            // Handle error case here
+        } finally {
+            setIsLoading(false);
+            setIsModalVisible(false);
+        }
     };
 
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
-            style={{ flex: 1 }}
+            style={styles.mainContainer}
         >
             <LinearGradient
                 colors={[COLORS.primary, COLORS.primary]}
-                style={{ flex: 1 }}
+                style={styles.gradient}
             >
                 <Appbar.Header>
-                    <Appbar.BackAction onPress={() => navigation.goBack()} />
+                    <Appbar.BackAction 
+                        onPress={() => navigation.goBack()} 
+                        disabled={isLoading}
+                    />
                     <Appbar.Content title="Enter PIN" />
                 </Appbar.Header>
-                <ScrollView contentContainerStyle={styles.container}>
-                    <Text style={styles.title}>Enter your 4-digit PIN</Text>
-                    <TextInput
-                        style={styles.pinInput}
-                        keyboardType="numeric"
-                        maxLength={4}
-                        secureTextEntry={true}
-                        value={pin}
-                        onChangeText={handlePinChange}
-                        placeholder="****"
-                        placeholderTextColor={COLORS.secondary}
-                        selectionColor={COLORS.secondary}
-                    />
-                    <Button
-                        mode="contained"
-                        onPress={handlePinSubmit}
-                        style={styles.submitButton}
-                        disabled={pin.length !== 4} // Disable button if PIN is not 4 digits
-                    >
-                        Submit
-                    </Button>
+                
+                <ScrollView 
+                    contentContainerStyle={styles.container}
+                    keyboardShouldPersistTaps="handled"
+                >
+                    <View style={styles.contentContainer}>
+                        <Text style={styles.title}>Enter your 4-digit PIN</Text>
+                        <TextInput
+                            style={styles.pinInput}
+                            keyboardType="numeric"
+                            maxLength={4}
+                            secureTextEntry={true}
+                            value={pin}
+                            onChangeText={handlePinChange}
+                            placeholder="****"
+                            placeholderTextColor={COLORS.secondary}
+                            selectionColor={COLORS.secondary}
+                            editable={!isLoading}
+                        />
+                        <View style={styles.buttonContainer}>
+                            <Button
+                                mode="contained"
+                                onPress={handlePinSubmit}
+                                style={styles.submitButton}
+                                disabled={pin.length !== 4 || isLoading}
+                                loading={isLoading}
+                            >
+                                {isLoading ? 'Processing...' : 'Submit'}
+                            </Button>
+                        </View>
+                    </View>
                 </ScrollView>
             </LinearGradient>
 
-            {/* Modal */}
             <Modal
                 transparent={true}
                 visible={isModalVisible}
                 animationType="fade"
+                onRequestClose={() => {
+                    if (!isLoading) setIsModalVisible(false);
+                }}
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <ActivityIndicator size="large" color={COLORS.secondary} />
-                        <Text style={styles.modalText}>Purchase of gift card is on the way. Please wait for verification...</Text>
+                        <Text style={styles.modalText}>
+                            Purchase of gift card is on the way. Please wait for verification...
+                        </Text>
                     </View>
                 </View>
             </Modal>
@@ -91,7 +118,16 @@ const EnterPinScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
+    mainContainer: {
+        flex: 1,
+    },
+    gradient: {
+        flex: 1,
+    },
     container: {
+        flexGrow: 1,
+    },
+    contentContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -101,6 +137,7 @@ const styles = StyleSheet.create({
         color: COLORS.secondary,
         ...FONTS.h2,
         marginBottom: SIZES.padding * 2,
+        textAlign: 'center',
     },
     pinInput: {
         borderBottomColor: COLORS.secondary,
@@ -111,8 +148,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         ...FONTS.h1,
     },
-    submitButton: {
+    buttonContainer: {
+        width: '100%',
+        alignItems: 'center',
         marginTop: SIZES.padding * 2,
+    },
+    submitButton: {
         backgroundColor: COLORS.secondary,
         padding: SIZES.padding,
         borderRadius: SIZES.radius,
@@ -125,8 +166,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.5)',
     },
     modalContent: {
-        width: '100%',
-        padding: 60,
+        width: '80%',
+        padding: SIZES.padding * 3,
         backgroundColor: 'white',
         borderRadius: SIZES.radius,
         alignItems: 'center',

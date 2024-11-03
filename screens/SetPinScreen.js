@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TextInput, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Modal, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { Appbar, Button } from 'react-native-paper';
 import { COLORS, SIZES, FONTS } from '../constants';
 
 const SetPinScreen = ({ navigation }) => {
     const [pin, setPin] = useState(['', '', '', '']);
     const [isModalVisible, setModalVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     
     // Refs to focus on the next input
     const inputRefs = useRef([]);
@@ -27,10 +28,16 @@ const SetPinScreen = ({ navigation }) => {
         }
     };
 
-    const handleSetPin = () => {
+    const handleSetPin = async () => {
         if (pin.every((digit) => digit !== '')) {
-            setModalVisible(false);
-            navigation.navigate('ConfirmPin', { pin });
+            try {
+                setIsLoading(true);
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                setModalVisible(true);
+            } finally {
+                setIsLoading(false);
+            }
         } else {
             alert('PIN must be 4 digits');
         }
@@ -38,53 +45,89 @@ const SetPinScreen = ({ navigation }) => {
 
     const handleModalClose = () => {
         setModalVisible(false);
-        navigation.navigate('Home'); // Navigate to the next screen
+        navigation.navigate('ConfirmPin', { pin });
     };
 
     return (
-        <View style={styles.container}>
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={styles.container}
+        >
             <Appbar.Header>
-                <Appbar.BackAction onPress={() => navigation.goBack()} />
+                <Appbar.BackAction 
+                    onPress={() => navigation.goBack()} 
+                    disabled={isLoading}
+                />
                 <Appbar.Content title="" />
             </Appbar.Header>
 
-            <View style={{ alignItems: 'center', marginTop: SIZES.padding * 2 }}>
-                <Text style={styles.title}>Set your PIN</Text>
-                <Text style={styles.subtitle}>
-                    You will use this to make transactions on Card2Pay
-                </Text>
-            </View>
+            <View style={styles.contentContainer}>
+                <View style={styles.headerContainer}>
+                    <Text style={styles.title}>Set your PIN</Text>
+                    <Text style={styles.subtitle}>
+                        You will use this to make transactions on Card2Pay
+                    </Text>
+                </View>
 
-            <View style={styles.pinContainer}>
-                {pin.map((digit, index) => (
-                    <TextInput
-                        key={index}
-                        ref={(el) => (inputRefs.current[index] = el)}
-                        value={digit}
-                        onChangeText={(value) => handlePinChange(value, index)}
-                        style={styles.pinInput}
-                        keyboardType="numeric"
-                        maxLength={1}
-                    />
-                ))}
-            </View>
+                <View style={styles.pinContainer}>
+                    {pin.map((digit, index) => (
+                        <TextInput
+                            key={index}
+                            ref={(el) => (inputRefs.current[index] = el)}
+                            value={digit}
+                            onChangeText={(value) => handlePinChange(value, index)}
+                            style={[
+                                styles.pinInput,
+                                digit ? styles.pinInputFilled : null
+                            ]}
+                            keyboardType="numeric"
+                            maxLength={1}
+                            editable={!isLoading}
+                            secureTextEntry={true}
+                        />
+                    ))}
+                </View>
 
-            <TouchableOpacity mode="contained" onPress={handleSetPin} style={styles.setPinButton}>
-                <Text style={styles.submitButtonText}>Set Pin</Text>
-             </TouchableOpacity>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity 
+                        onPress={handleSetPin} 
+                        style={[
+                            styles.setPinButton,
+                            pin.every((digit) => digit !== '') 
+                                ? styles.setPinButtonActive 
+                                : styles.setPinButtonInactive
+                        ]}
+                        disabled={!pin.every((digit) => digit !== '') || isLoading}
+                    >
+                        <Text style={styles.submitButtonText}>
+                            {isLoading ? 'Setting PIN...' : 'Set PIN'}
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
 
             {/* Success Modal */}
-            <Modal visible={isModalVisible} animationType="slide" transparent>
+            <Modal 
+                visible={isModalVisible} 
+                animationType="fade" 
+                transparent
+                onRequestClose={() => setModalVisible(false)}
+            >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>PIN Set Successfully!</Text>
-                        <Button mode="contained" onPress={handleModalClose} style={styles.modalButton}>
+                        <Button 
+                            mode="contained" 
+                            onPress={handleModalClose} 
+                            style={styles.modalButton}
+                            labelStyle={styles.modalButtonText}
+                        >
                             Continue
                         </Button>
                     </View>
                 </View>
             </Modal>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
@@ -93,25 +136,34 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
     },
+    contentContainer: {
+        flex: 1,
+        paddingHorizontal: SIZES.padding * 2,
+    },
+    headerContainer: {
+        alignItems: 'center',
+        marginTop: SIZES.padding * 2,
+    },
     title: {
-        fontFamily: 'Inter-Sans-Bold',
         fontSize: 30,
         color: COLORS.secondary,
         ...FONTS.h2,
         fontWeight: 'bold',
+        textAlign: 'center',
     },
     subtitle: {
         color: COLORS.secondary,
         marginTop: SIZES.padding,
         textAlign: 'center',
         ...FONTS.body4,
-        padding: 10,
-        width: 400,
+        paddingHorizontal: SIZES.padding * 2,
     },
     pinContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        marginVertical: SIZES.padding * 2,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginVertical: SIZES.padding * 4,
+        gap: SIZES.padding * 2,
     },
     pinInput: {
         width: 60,
@@ -123,17 +175,33 @@ const styles = StyleSheet.create({
         fontSize: 24,
         color: COLORS.black,
         fontWeight: 'bold',
+        backgroundColor: 'white',
+    },
+    pinInputFilled: {
+        backgroundColor: 'rgba(0,0,0,0.05)',
+    },
+    buttonContainer: {
+        alignItems: 'center',
+        marginTop: 'auto',
+        marginBottom: SIZES.padding * 3,
     },
     setPinButton: {
-        width: 300,
-        height: 45,
-        backgroundColor: COLORS.secondary,
+        width: '80%',
+        height: 50,
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: SIZES.padding * 2,
-        marginLeft: 30,
-        marginBottom: 20,
+    },
+    setPinButtonActive: {
+        backgroundColor: COLORS.secondary,
+    },
+    setPinButtonInactive: {
+        backgroundColor: 'rgba(0,0,0,0.1)',
+    },
+    submitButtonText: {
+        color: COLORS.white,
+        ...FONTS.h3,
+        fontWeight: '600',
     },
     modalContainer: {
         flex: 1,
@@ -143,25 +211,27 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: '#fff',
-        padding: 20,
+        padding: SIZES.padding * 2,
         borderRadius: 10,
         width: '80%',
-        justifyContent: 'center',
         alignItems: 'center',
     },
     modalTitle: {
-        fontSize: 20,
+        ...FONTS.h3,
+        color: COLORS.secondary,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: SIZES.padding * 2,
+        textAlign: 'center',
     },
     modalButton: {
         width: '100%',
+        height: 50,
         backgroundColor: COLORS.secondary,
     },
-    submitButtonText: {
+    modalButtonText: {
+        ...FONTS.h3,
         color: COLORS.white,
-       
-      },
+    },
 });
 
 export default SetPinScreen;

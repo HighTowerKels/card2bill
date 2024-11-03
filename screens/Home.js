@@ -10,137 +10,82 @@ import {
   Animated,
 } from "react-native";
 import { Card } from "react-native-paper";
+import { COLORS, SIZES, FONTS } from "../constants";
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { COLORS, SIZES, FONTS, icons } from "../constants";
-
-const THEME_COLORS = {
-  primary: '#620C90',
-  secondary: '#3A42E1',
-  background: '#FFFFFF',
-  text: '#333333',
-  success: '#4CAF50',
-  warning: '#FFC107',
-  pending: '#FF9800',
-};
 
 const Home = () => {
   const [showBalance, setShowBalance] = useState(true);
-  const [verificationList, setVerificationList] = useState([
-    { 
-      id: 1, 
-      label: 'Verify Email', 
-      progress: 100, 
-      status: 'Completed',
-      icon: 'checkmark-circle-outline',
-      color: THEME_COLORS.success 
-    },
-    { 
-      id: 2, 
-      label: 'Link Phone Number', 
-      progress: 50, 
-      status: 'In Progress',
-      icon: 'time-outline',
-      color: THEME_COLORS.warning 
-    },
-    { 
-      id: 3, 
-      label: 'Add Bank Account', 
-      progress: 0, 
-      status: 'Pending',
-      icon: 'alert-circle-outline',
-      color: THEME_COLORS.pending 
-    },
-    { 
-      id: 4, 
-      label: 'Set up Security Questions', 
-      progress: 0, 
-      status: 'Pending',
-      icon: 'alert-circle-outline',
-      color: THEME_COLORS.pending 
-    },
+  const [verificationList] = useState([
+    { id: 1, label: 'Verify Email', progress: 100, icon: 'mail-outline' },
+    { id: 2, label: 'Link Phone Number', progress: 50, icon: 'phone-portrait-outline' },
+    { id: 3, label: 'Add Bank Account', progress: 0, icon: 'card-outline' },
+    { id: 4, label: 'Set up Security', progress: 0, icon: 'shield-outline' },
   ]);
 
   const featuresData = [
-    { id: 1, icon: icons.reload, description: "Airtime" },
-    { id: 2, icon: icons.send, description: "Mobile Data" },
-    { id: 3, icon: icons.game, description: "Betting" },
-    { id: 4, icon: icons.buy, description: "Electricity" },
-    { id: 5, icon: icons.phones, description: "Cable TV" },
-    { id: 6, icon: icons.sell, description: "Saving" },
+    { id: 1, icon: 'phone-portrait-outline', description: "Airtime", color: '#620C90' },
+    { id: 2, icon: 'wifi-outline', description: "Mobile Data", color: '#620C90' },
+    { id: 3, icon: 'game-controller-outline', description: "Betting", color: '#620C90' },
+    { id: 4, icon: 'flash-outline', description: "Electricity", color: '#620C90' },
+    { id: 5, icon: 'tv-outline', description: "Cable TV", color: '#620C90' },
+    { id: 6, icon: 'wallet-outline', description: "Saving", color: '#620C90' },
   ];
 
   const messages = [
-    "You've earned a bonus!",
-    "Link your bank account for rewards.",
-    "Secure your account with 2FA.",
-    "Track your spending easily!",
+    "🎁 You've earned a $50 bonus!",
+    "🏦 Link your bank account for 2% cashback",
+    "🔒 Enable 2FA for account security",
+    "📊 Your spending analysis is ready",
   ];
 
   function renderHeader() {
     return (
-      <View>
-        <LinearGradient
-          colors={[THEME_COLORS.primary, THEME_COLORS.secondary]}
-          style={styles.headerContainer}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-        >
-          <View style={styles.headerContent}>
-            <View style={styles.headerTop}>
-              <View style={styles.greetingContainer}>
-                <Text style={styles.greeting}>Good Morning</Text>
-                <Text style={styles.username}>Hightower</Text>
-              </View>
-              <Image
-                source={{ uri: "https://via.placeholder.com/100" }}
-                style={styles.profileImage}
-              />
-            </View>
+      <LinearGradient
+        colors={['#620C90', '#3A42E1']}
+        style={styles.headerContainer}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      >
+        <View style={styles.headerTop}>
+          <View>
+            <Text style={styles.welcomeText}>Welcome back,</Text>
+            <Text style={styles.nameText}>Hightower</Text>
+          </View>
+          <TouchableOpacity>
+            <Image
+              source={{ uri: "https://via.placeholder.com/100" }}
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
+        </View>
 
-            <View style={styles.balanceContainer}>
-              <View>
-                <Text style={styles.balanceLabel}>Available Balance</Text>
-                <View style={styles.amountRow}>
-                  <Text style={styles.amount}>
-                    {showBalance ? "$5,200.00" : "****"}
-                  </Text>
-                  <TouchableOpacity 
-                    onPress={() => setShowBalance(!showBalance)}
-                    style={styles.eyeButton}
-                  >
-                    <Ionicons 
-                      name={showBalance ? "eye-outline" : "eye-off-outline"} 
-                      size={24} 
-                      color={THEME_COLORS.background}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <TouchableOpacity 
-                style={styles.withdrawButton}
-                onPress={() => console.log("Withdraw")}
-              >
-                <Text style={styles.withdrawText}>Withdraw</Text>
+        <View style={styles.balanceContainer}>
+          <View>
+            <Text style={styles.balanceLabel}>Available Balance</Text>
+            <View style={styles.amountContainer}>
+              <Text style={styles.amount}>{showBalance ? "$5,200" : "****"}</Text>
+              <TouchableOpacity onPress={() => setShowBalance(!showBalance)}>
+                <Ionicons 
+                  name={showBalance ? "eye-outline" : "eye-off-outline"} 
+                  size={24} 
+                  color="white" 
+                />
               </TouchableOpacity>
             </View>
           </View>
-        </LinearGradient>
-        <RenderOverlappingCard messages={messages} />
-      </View>
+          <TouchableOpacity style={styles.withdrawButton}>
+            <Ionicons name="wallet-outline" size={20} color="white" />
+            <Text style={styles.withdrawText}>Withdraw</Text>
+          </TouchableOpacity>
+        </View>
+      </LinearGradient>
     );
   }
 
   function RenderOverlappingCard({ messages }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const opacity = useRef(new Animated.Value(0)).current;
-
-    const messageIcons = [
-      'gift-outline',
-      'card-outline',
-      'wallet-outline',
-      'pricetag-outline',
-    ];
 
     useEffect(() => {
       const animateMessages = () => {
@@ -169,16 +114,17 @@ const Home = () => {
     return (
       <Card style={styles.overlapCard}>
         <Animated.View style={[styles.messageContainer, { opacity }]}>
-          <View style={styles.iconTextContainer}>
-            <Ionicons
-              name={messageIcons[currentIndex]}
-              size={24}
-              color={THEME_COLORS.primary}
-              style={styles.messageIcon}
-            />
-            <Text style={styles.messageText}>
-              {messages[currentIndex]}
-            </Text>
+          <Text style={styles.messageText}>{messages[currentIndex]}</Text>
+          <View style={styles.dotContainer}>
+            {messages.map((_, index) => (
+              <View
+                key={index}
+                style={[
+                  styles.dot,
+                  { backgroundColor: index === currentIndex ? '#620C90' : '#D1D1D1' }
+                ]}
+              />
+            ))}
           </View>
         </Animated.View>
       </Card>
@@ -187,15 +133,9 @@ const Home = () => {
 
   function renderFeatures() {
     const renderItem = ({ item }) => (
-      <TouchableOpacity 
-        style={styles.featureItem}
-        onPress={() => console.log(item.description)}
-      >
+      <TouchableOpacity style={styles.featureItem}>
         <View style={styles.featureIconContainer}>
-          <Image 
-            source={item.icon} 
-            style={[styles.featureIcon, { tintColor: THEME_COLORS.primary }]} 
-          />
+          <Ionicons name={item.icon} size={24} color="white" />
         </View>
         <Text style={styles.featureText}>{item.description}</Text>
       </TouchableOpacity>
@@ -203,6 +143,12 @@ const Home = () => {
 
     return (
       <View style={styles.featuresContainer}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <TouchableOpacity>
+            <Text style={styles.seeAll}>See All</Text>
+          </TouchableOpacity>
+        </View>
         <FlatList
           data={featuresData}
           numColumns={3}
@@ -216,57 +162,27 @@ const Home = () => {
   }
 
   function renderVerificationList() {
-    const renderVerificationItem = ({ item }) => (
-      <Card style={styles.verificationItem}>
-        <Card.Content style={styles.verificationContent}>
-          <View style={styles.verificationLeft}>
-            <Ionicons
-              name={item.icon}
-              size={24}
-              color={item.color}
-              style={styles.verificationIcon}
-            />
-            <View style={styles.verificationTextContainer}>
-              <Text style={styles.verificationLabel}>{item.label}</Text>
-              <Text style={[styles.verificationStatus, { color: item.color }]}>
-                {item.status}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBar}>
-              <View 
-                style={[
-                  styles.progressFill, 
-                  { 
-                    width: `${item.progress}%`,
-                    backgroundColor: item.color
-                  }
-                ]} 
-              />
-            </View>
-            <Text style={[styles.progressText, { color: item.color }]}>
-              {item.progress}%
-            </Text>
-          </View>
-        </Card.Content>
-      </Card>
-    );
-
     return (
-      <View style={styles.verificationListContainer}>
+      <View style={styles.verificationContainer}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Verification Checklist</Text>
-          <TouchableOpacity onPress={() => console.log("View all")}>
-            <Text style={styles.viewAllText}>View All</Text>
-          </TouchableOpacity>
+          <Text style={styles.sectionTitle}>Complete Your Profile</Text>
+          <Text style={styles.progressText}>2/4</Text>
         </View>
-        <FlatList
-          data={verificationList}
-          renderItem={renderVerificationItem}
-          keyExtractor={(item) => `${item.id}`}
-          scrollEnabled={false}
-        />
+        {verificationList.map((item) => (
+          <TouchableOpacity key={item.id} style={styles.verificationItem}>
+            <View style={styles.verificationLeft}>
+              <View style={[styles.verificationIcon, { backgroundColor: item.progress === 100 ? '#E5FFE5' : '#FFE5E5' }]}>
+                <Ionicons name={item.icon} size={20} color={item.progress === 100 ? '#00C853' : '#620C90'} />
+              </View>
+              <Text style={styles.verificationLabel}>{item.label}</Text>
+            </View>
+            {item.progress === 100 ? (
+              <Ionicons name="checkmark-circle" size={24} color="#00C853" />
+            ) : (
+              <Ionicons name="chevron-forward" size={24} color="#620C90" />
+            )}
+          </TouchableOpacity>
+        ))}
       </View>
     );
   }
@@ -277,7 +193,7 @@ const Home = () => {
         ListHeaderComponent={() => (
           <>
             {renderHeader()}
-            <Text style={styles.sectionTitle}>Quick Actions</Text>
+            <RenderOverlappingCard messages={messages} />
             {renderFeatures()}
             {renderVerificationList()}
           </>
@@ -290,203 +206,168 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME_COLORS.background,
+    backgroundColor: '#F8F9FA',
   },
   headerContainer: {
     paddingTop: SIZES.padding * 2,
+    paddingHorizontal: SIZES.padding,
     paddingBottom: SIZES.padding * 4,
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-  },
-  headerContent: {
-    paddingHorizontal: SIZES.padding,
   },
   headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SIZES.padding,
+    marginBottom: 20,
   },
-  greetingContainer: {
-    flex: 1,
-  },
-  greeting: {
-    color: THEME_COLORS.background,
+  welcomeText: {
+    color: 'white',
     ...FONTS.body3,
-    opacity: 0.8,
   },
-  username: {
-    color: THEME_COLORS.background,
+  nameText: {
+    color: 'white',
     ...FONTS.h2,
-    marginTop: 4,
+    marginTop: 5,
   },
   profileImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
     borderWidth: 2,
-    borderColor: THEME_COLORS.background,
+    borderColor: 'white',
   },
   balanceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    marginTop: SIZES.padding,
+    alignItems: 'center',
   },
   balanceLabel: {
-    color: THEME_COLORS.background,
-    ...FONTS.body3,
-    opacity: 0.8,
+    color: 'white',
+    ...FONTS.body4,
   },
-  amountRow: {
+  amountContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 5,
   },
   amount: {
-    color: THEME_COLORS.background,
+    color: 'white',
     ...FONTS.h1,
-    fontSize: 36,
-  },
-  eyeButton: {
-    marginLeft: SIZES.base,
-    padding: SIZES.base,
+    marginRight: 10,
   },
   withdrawButton: {
-    backgroundColor: THEME_COLORS.background,
-    paddingHorizontal: SIZES.padding * 1.5,
-    paddingVertical: SIZES.base,
-    borderRadius: SIZES.radius,
-    elevation: 3,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 25,
   },
   withdrawText: {
-    color: THEME_COLORS.primary,
+    color: 'white',
+    marginLeft: 8,
     ...FONTS.h4,
   },
   overlapCard: {
-    marginTop: -30,
+    backgroundColor: COLORS.white,
     marginHorizontal: SIZES.padding,
+    marginTop: -40,
     borderRadius: 15,
-    elevation: 5,
+    elevation: 8,
   },
   messageContainer: {
     padding: SIZES.padding,
-  },
-  iconTextContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
   },
-  messageIcon: {
-    marginRight: SIZES.base,
-  },
   messageText: {
-    color: THEME_COLORS.primary,
-    ...FONTS.body3,
-    flex: 1,
+    ...FONTS.h4,
+    color: '#620C90',
+    textAlign: 'center',
+  },
+  dotContainer: {
+    flexDirection: 'row',
+    marginTop: 10,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 4,
+  },
+  featuresContainer: {
+    padding: SIZES.padding,
+    marginTop: 10,
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SIZES.padding,
+    marginBottom: 15,
   },
   sectionTitle: {
-    ...FONTS.h2,
-    color: THEME_COLORS.text,
-    marginHorizontal: SIZES.padding,
-    marginTop: SIZES.padding * 2,
-    marginBottom: SIZES.padding,
+    ...FONTS.h3,
+    color: '#2D3436',
   },
-  viewAllText: {
-    color: THEME_COLORS.primary,
-    ...FONTS.body3,
-  },
-  featuresContainer: {
-    paddingHorizontal: SIZES.padding,
+  seeAll: {
+    color: '#620C90',
+    ...FONTS.body4,
   },
   featureRow: {
     justifyContent: 'space-between',
-    marginBottom: SIZES.padding,
   },
   featureItem: {
-    width: '30%',
+    width: '31%',
     alignItems: 'center',
-    backgroundColor: THEME_COLORS.background,
+    padding: SIZES.base,
     borderRadius: 15,
-    padding: SIZES.padding,
-    elevation: 2,
+    marginBottom: 10,
   },
   featureIconContainer: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: `${THEME_COLORS.primary}10`,
+    backgroundColor: '#620C90',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: SIZES.base,
-  },
-  featureIcon: {
-    width: 24,
-    height: 24,
+    marginBottom: 8,
   },
   featureText: {
-    color: THEME_COLORS.text,
     ...FONTS.body4,
-    marginTop: SIZES.base,
-    textAlign: 'center',
+    color: '#2D3436',
   },
-  verificationListContainer: {
-    marginHorizontal: SIZES.padding,
-    marginTop: SIZES.padding,
+  verificationContainer: {
+    padding: SIZES.padding,
+  },
+  progressText: {
+    color: '#620C90',
+    ...FONTS.body4,
   },
   verificationItem: {
-    marginBottom: SIZES.base,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: COLORS.white,
+    padding: SIZES.padding,
     borderRadius: 12,
+    marginBottom: 10,
     elevation: 2,
-  },
-  verificationContent: {
-    flexDirection: 'column',
-    gap: SIZES.base,
   },
   verificationLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   verificationIcon: {
-    marginRight: SIZES.base,
-  },
-  verificationTextContainer: {
-    flex: 1,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
   verificationLabel: {
-    color: THEME_COLORS.text,
     ...FONTS.body3,
-    fontWeight: '500',
-  },
-  verificationStatus: {
-    ...FONTS.body4,
-    marginTop: 2,
-  },
-  progressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SIZES.base,
-    marginTop: SIZES.base,
-  },
-  progressBar: {
-    flex: 1,
-    height: 4,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    borderRadius: 2,
-  },
-  progressText: {
-    ...FONTS.body4,
-    minWidth: 35,
+    color: '#2D3436',
   },
 });
 
